@@ -21,12 +21,13 @@ public class AbstractSyntaxTree {
         }
     }
     
-    public void preOrderTraverse(Node node) {
+    private void preOrderTraverse(Node node,int i) {
+        for (int n = 0; n < i; n++) {System.out.print(".");}
         System.out.println(node.getData());
-        node.children.forEach((child) -> preOrderTraverse(child));
+        node.children.forEach((child) -> preOrderTraverse(child, i+1));
     }
     
-    public void printStandardizedAst() {
-        
+    public void printAst() {
+        this.preOrderTraverse(this.getRoot(), 0);
     }
 }

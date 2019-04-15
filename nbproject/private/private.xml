@@ -3,21 +3,8 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/Binod/Documents/NetBeansProjects/ast_analyzer/src/Engine/CSEMachineFactory.java</file>
-            <file>file:/C:/Users/Binod/Documents/NetBeansProjects/ast_analyzer/src/Symbols/Gamma.java</file>
-            <file>file:/C:/Users/Binod/Documents/NetBeansProjects/ast_analyzer/src/Symbols/Symbol.java</file>
-            <file>file:/C:/Users/Binod/Documents/NetBeansProjects/ast_analyzer/src/Engine/FileReaderFactory.java</file>
-            <file>file:/C:/Users/Binod/Documents/NetBeansProjects/ast_analyzer/src/Engine/AbstractSyntaxTreeFactory.java</file>
-            <file>file:/C:/Users/Binod/Documents/NetBeansProjects/ast_analyzer/src/Symbols/E.java</file>
-            <file>file:/C:/Users/Binod/Documents/NetBeansProjects/ast_analyzer/src/Engine/FileReader.java</file>
-            <file>file:/C:/Users/Binod/Documents/NetBeansProjects/ast_analyzer/src/Symbols/Beta.java</file>
-            <file>file:/C:/Users/Binod/Documents/NetBeansProjects/ast_analyzer/src/Engine/NodeFactory.java</file>
-            <file>file:/C:/Users/Binod/Documents/NetBeansProjects/ast_analyzer/src/Symbols/Lambda.java</file>
-            <file>file:/C:/Users/Binod/Documents/NetBeansProjects/ast_analyzer/src/Symbols/Tau.java</file>
-            <file>file:/C:/Users/Binod/Documents/NetBeansProjects/ast_analyzer/src/Symbols/Delta.java</file>
-            <file>file:/C:/Users/Binod/Documents/NetBeansProjects/ast_analyzer/src/Symbols/Y.java</file>
+            <file>file:/C:/Users/Binod/Documents/NetBeansProjects/ast_analyzer/src/Main/input.txt</file>
             <file>file:/C:/Users/Binod/Documents/NetBeansProjects/ast_analyzer/src/Main/myrpal.java</file>
-            <file>file:/C:/Users/Binod/Documents/NetBeansProjects/ast_analyzer/src/Symbols/Eta.java</file>
             <file>file:/C:/Users/Binod/Documents/NetBeansProjects/ast_analyzer/src/Engine/CSEMachine.java</file>
         </group>
     </open-files>

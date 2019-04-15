@@ -56,6 +56,7 @@ public class Node {
                     temp2.setParent(this.children.get(0));
                     temp2.setDepth(this.depth+2);
                     this.children.set(1, temp1);
+                    this.children.get(0).setData("lambda");
                     this.children.get(0).children.set(1, temp2);
                     this.setData("gamma");
                     break;
@@ -168,7 +169,7 @@ public class Node {
                     Node E = this.children.get(0).children.get(1);
                     Node F = NodeFactory.getNode(X.getData(), this.depth+1, this, X.children, true);
                     Node G = NodeFactory.getNode("gamma", this.depth+1, this, new ArrayList<Node>(), true);
-                    Node Y = NodeFactory.getNode("ystar", this.depth+2, G, null, true);
+                    Node Y = NodeFactory.getNode("ystar", this.depth+2, G, new ArrayList<Node>(), true);
                     Node L = NodeFactory.getNode("lambda", this.depth+2, G, new ArrayList<Node>(), true);                    
                     X.setDepth(L.depth+1);
                     X.setParent(L);
