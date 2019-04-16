@@ -5,13 +5,16 @@ import java.util.ArrayList;
 public class Lambda extends Symbol {
     private int index;
     private int environment;
-    private ArrayList<Symbol> list;
+    public ArrayList<String> identifiers;
+    private Delta delta;
     
-    public Lambda() {
+    public Lambda(int i) {
         super("lambda");
+        this.setIndex(i);
+        this.identifiers = new ArrayList<String>();
     }
     
-    public void setIndex(int i) {
+    private void setIndex(int i) {
         this.index = i;
     }
     
@@ -27,11 +30,11 @@ public class Lambda extends Symbol {
         return this.environment;
     }
     
-    public void setStack(ArrayList<Symbol> list) {
-        this.list = list;
+    public void setDelta(Delta delta) {
+        this.delta = delta;
     }
     
-    public ArrayList<Symbol> getStack() {
-        return this.list;
+    public Delta getDelta() {
+        return this.delta;
     }
 }

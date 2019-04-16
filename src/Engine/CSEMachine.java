@@ -11,10 +11,19 @@ public class CSEMachine {
     public HashMap<E, HashMap<Symbol, Symbol>> environment = new HashMap<E, HashMap<Symbol, Symbol>>();
     public HashMap<Symbol, ArrayList<Symbol>> hashmap = new HashMap<Symbol, ArrayList<Symbol>>();
     
-    public CSEMachine() {
-        
+    public CSEMachine(ArrayList<Symbol> control, ArrayList<Symbol> stack) {
+        this.setControl(control);
+        this.setStack(stack);
     }  
     
+    public void setControl(ArrayList<Symbol> control) {
+        this.control = control;
+    }
+    
+    public void setStack(ArrayList<Symbol> stack) {
+        this.stack = stack;
+    }
+    /*
     public void execute() {
         int currentEnvironment = 0;
         while (!control.isEmpty()) {
@@ -28,7 +37,7 @@ public class CSEMachine {
             // rule no. 2
             } else if (currentSymbol instanceof Lambda) {
             
-            // rule no. 3, 4, 10, 12 & 13
+            // rule no. 3, 4, 10, 11, 12 & 13
             } else if (currentSymbol instanceof Gamma) {
                 
             // rule no. 5
@@ -46,9 +55,28 @@ public class CSEMachine {
             }
         }        
     }
+    */
+    
+    public void printList(ArrayList<Symbol> symbols) {
+        for (Symbol symbol: symbols) {
+            if (symbol instanceof Delta) {
+                Delta delta = (Delta) symbol;
+                printList(delta.symbols);
+            } else if (symbol instanceof Lambda) {
+                Lambda lambda = (Lambda) symbol;
+                printList(lambda.getDelta().symbols);
+            } else {
+                System.out.println(symbol.getData());
+            }
+        }
+    }
+    
+    public void printControl() {
+        printList(this.control);
+    }
     
     public String getAnswer() {
-        this.execute();
+        //this.execute();
         return stack.get(0).getData();
     }
 }

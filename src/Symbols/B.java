@@ -5,12 +5,17 @@
  */
 package Symbols;
 
+import java.util.ArrayList;
+
 /**
  *
  * @author Binod
  */
-public class Var extends Symbol{
-    public Var(String data) {
-        super(data);
+public class B extends Symbol {
+    public ArrayList<Symbol> symbols;
+    
+    public B() {
+        super("b");
     }
+    
 }
