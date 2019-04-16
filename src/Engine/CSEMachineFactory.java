@@ -4,6 +4,8 @@ import Symbols.*;
 import java.util.ArrayList;
 
 public class CSEMachineFactory {
+    private E e0 = new E(0);
+    
     public CSEMachineFactory() {
         
     }
@@ -59,7 +61,23 @@ public class CSEMachineFactory {
                 return new Ystar();
             // operands <ID:>, <INT:>, <STR:>, <nil>, <true>, <false>, <dummy>
             default:
-                return new Rand(node.getData());
+                if (node.getData().startsWith("<ID:")) {                    
+                    return new Id(node.getData().substring(4, node.getData().length()-1));
+                } else if (node.getData().startsWith("<INT:")) {                    
+                    return new Int(node.getData().substring(5, node.getData().length()-1));
+                } else if (node.getData().startsWith("<STR:")) {                    
+                    return new Int(node.getData().substring(5, node.getData().length()-1));
+                } else if (node.getData().startsWith("<nil")) {                    
+                    return new Tup();
+                } else if (node.getData().startsWith("<true>")) {                    
+                    return new Bool("true");
+                } else if (node.getData().startsWith("<false>")) {                    
+                    return new Bool("false");
+                } else if (node.getData().startsWith("<dummy>")) {                    
+                    return new Dummy();
+                } else {
+                    return new Err();
+                }          
         }
     }
     
@@ -68,10 +86,10 @@ public class CSEMachineFactory {
         lambda.setDelta(this.getDelta(node.children.get(1), i));
         if (node.children.get(0).getData() == ",") {
             for (Node identifier: node.children.get(0).children) {
-                lambda.identifiers.add(identifier.getData());
+                lambda.identifiers.add(new Id(identifier.getData().substring(4, node.getData().length()-1)));
             }
         } else {
-            lambda.identifiers.add(node.children.get(0).getData());
+            lambda.identifiers.add(new Id(node.children.get(0).getData().substring(4, node.getData().length()-1)));
         }
         return lambda;
     }
@@ -89,19 +107,25 @@ public class CSEMachineFactory {
     }
     
     public ArrayList<Symbol> getControl(AbstractSyntaxTree ast) {
-        E e0 = new E(0);
-        Delta delta0 = this.getDelta(ast.getRoot(), 0);
         ArrayList<Symbol> control = new ArrayList<Symbol>();
-        control.add(e0);
-        control.add(delta0);
+        control.add(this.e0);
+        control.add(this.getDelta(ast.getRoot(), 0));
         return control;
     }
     
     public ArrayList<Symbol> getStack() {
-        return new ArrayList<Symbol>();
+        ArrayList<Symbol> stack = new ArrayList<Symbol>();
+        stack.add(this.e0);
+        return stack;
+    }
+    
+    public ArrayList<Symbol> getEnvironment() {
+        ArrayList<Symbol> environment = new ArrayList<Symbol>();
+        environment.add(this.e0);
+        return environment;
     }
     
     public CSEMachine getCSEMachine(AbstractSyntaxTree ast) {        
-        return new CSEMachine(this.getControl(ast), this.getStack());
+        return new CSEMachine(this.getControl(ast), this.getStack(), this.getEnvironment());
     }
 }

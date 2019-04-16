@@ -4,12 +4,12 @@ import java.util.HashMap;
 
 public class E extends Symbol {
     private int index;
-    public HashMap<String,String> values;
+    public HashMap<Id,Symbol> values;
     
     public E(int i) {
         super("e");
         this.setIndex(i);
-        this.values = new HashMap<String,String>();
+        this.values = new HashMap<Id,Symbol>();
     }
     
     public void setIndex(int i) {

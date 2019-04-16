@@ -9,9 +9,8 @@ package Symbols;
  *
  * @author Binod
  */
-public class Rand extends Symbol {
-    public Rand(String data) {
+public class Id extends Rand {
+    public Id(String data) {
         super(data);
     }
-    
 }

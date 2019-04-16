@@ -11,4 +11,8 @@ public class Tau extends Symbol {
     private void setN(int n) {
         this.n = n;
     }
+    
+    public int getN() {
+        return this.n;
+    }
 }

@@ -5,13 +5,17 @@
  */
 package Symbols;
 
+import java.util.ArrayList;
+
 /**
  *
  * @author Binod
  */
-public class Rand extends Symbol {
-    public Rand(String data) {
-        super(data);
-    }
+public class Tup extends Rand {
+    public ArrayList<Symbol> symbols;
     
+    public Tup() {
+        super("tup");
+        this.symbols = new ArrayList<Symbol>();
+    }
 }

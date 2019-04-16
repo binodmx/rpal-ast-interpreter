@@ -5,13 +5,13 @@ import java.util.ArrayList;
 public class Lambda extends Symbol {
     private int index;
     private int environment;
-    public ArrayList<String> identifiers;
+    public ArrayList<Id> identifiers;
     private Delta delta;
     
     public Lambda(int i) {
         super("lambda");
         this.setIndex(i);
-        this.identifiers = new ArrayList<String>();
+        this.identifiers = new ArrayList<Id>();
     }
     
     private void setIndex(int i) {
