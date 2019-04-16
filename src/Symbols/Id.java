@@ -13,4 +13,8 @@ public class Id extends Rand {
     public Id(String data) {
         super(data);
     }
+    
+    public String getData() {
+        return super.getData();
+    }
 }

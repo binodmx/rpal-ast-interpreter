@@ -27,15 +27,18 @@ public class CSEMachine {
     }
     
     public void execute() {
-        E currentEnvironment = (E) this.control.get(0);
+        E currentEnvironment = (E) this.environment.get(0);
         while (!control.isEmpty()) {
+            //this.printControl();
+            //this.printStack();
             // pop last element of the control
             Symbol currentSymbol = control.get(control.size()-1);
             control.remove(control.size()-1);
             
             // rule no. 1
             if (currentSymbol instanceof Id) {
-                stack.add(0, this.lookup((Id) currentSymbol, currentEnvironment));
+                //System.out.println("CE: "+currentEnvironment.getIndex()+", "+currentEnvironment.getParent().getIndex());
+                this.stack.add(0, currentEnvironment.lookup((Id) currentSymbol));
             // rule no. 2
             } else if (currentSymbol instanceof Lambda) {
                 Lambda lambda = (Lambda) currentSymbol;
@@ -50,8 +53,13 @@ public class CSEMachine {
                     Lambda lambda = (Lambda) nextSymbol;
                     E e = new E(lambda.getIndex());
                     if (lambda.identifiers.size() == 1) {
-                        e.values.put(lambda.identifiers.get(0), this.stack.get(0));
-                        this.stack.remove(0);
+                        Id id = lambda.identifiers.get(0);
+                        if (id.getData() == "Print") {
+                            
+                        } else {
+                            e.values.put(lambda.identifiers.get(0), this.stack.get(0));
+                            this.stack.remove(0);
+                        }
                     } else {
                         Tup tup = (Tup) this.stack.get(0);
                         this.stack.remove(0);
@@ -60,9 +68,12 @@ public class CSEMachine {
                             e.values.put(id, tup.symbols.get(i++));
                         }
                     }
+                    e.setParent(currentEnvironment);
+                    currentEnvironment = e;
                     this.control.add(e);
                     this.control.add(lambda.getDelta());
                     this.stack.add(0, e);
+                    this.environment.add(e);
                 }
                 // tup (rule no. 10)
                 if (nextSymbol instanceof Tup) {
@@ -106,7 +117,7 @@ public class CSEMachine {
                     Symbol rand1 = this.stack.get(0);
                     Symbol rand2 = this.stack.get(1);
                     this.stack.remove(0);
-                    this.stack.remove(1);
+                    this.stack.remove(0);
                     this.stack.add(0, this.applyBinaryOperation(rator, rand1, rand2));
                 }
             // rule no. 8
@@ -126,25 +137,52 @@ public class CSEMachine {
                     this.stack.remove(0);
                 }
                 this.stack.add(0, tup);
+            } else if (currentSymbol instanceof Delta) {
+                Delta delta = (Delta) currentSymbol;
+                this.control.addAll(delta.symbols);
+            } else {
+                this.stack.add(0, currentSymbol);
             }
         }        
     }
     
     public void printControl() {
+        System.out.print("Control: ");
         for (Symbol symbol: this.control) {
-            System.out.println(symbol.getData());
+            System.out.print(symbol.getData());
+            if (symbol instanceof Lambda) {
+                System.out.print(((Lambda) symbol).getIndex());
+            } else if (symbol instanceof Delta) {
+                System.out.print(((Delta) symbol).getIndex());
+            } else if (symbol instanceof E) {
+                System.out.print(((E) symbol).getIndex());
+            }
+            System.out.print(",");
         }
+        System.out.println();
     }
     
-    public Symbol lookup(Id id, E e) {
-        return e.values.get(id);
+    public void printStack() {
+        System.out.print("Stack: ");
+        for (Symbol symbol: this.stack) {
+            System.out.print(symbol.getData());
+            if (symbol instanceof Lambda) {
+                System.out.print(((Lambda) symbol).getIndex());
+            } else if (symbol instanceof Delta) {
+                System.out.print(((Delta) symbol).getIndex());
+            } else if (symbol instanceof E) {
+                System.out.print(((E) symbol).getIndex());
+            }
+            System.out.print(",");
+        }
+        System.out.println();
     }
     
     public Symbol applyUnaryOperation(Symbol rator, Symbol rand) {
-        if (rator.getData() == "neg") {
+        if ("neg".equals(rator.getData())) {
             int val = Integer.parseInt(rand.getData());
             return new Int(Integer.toString(-1*val));
-        } else if (rator.getData() == "not") {
+        } else if ("not".equals(rator.getData())) {
             boolean val = Boolean.parseBoolean(rand.getData());
             return new Bool(Boolean.toString(!val));
         } else {
@@ -153,59 +191,59 @@ public class CSEMachine {
     }
     
     public Symbol applyBinaryOperation(Symbol rator, Symbol rand1, Symbol rand2) {
-        if (rator.getData() == "+") {
+        if ("+".equals(rator.getData())) {
             int val1 = Integer.parseInt(rand1.getData());
             int val2 = Integer.parseInt(rand2.getData());
             return new Int(Integer.toString(val1+val2));
-        } else if (rator.getData() == "-") {
+        } else if ("-".equals(rator.getData())) {
             int val1 = Integer.parseInt(rand1.getData());
             int val2 = Integer.parseInt(rand2.getData());
             return new Int(Integer.toString(val1-val2));
-        } else if (rator.getData() == "*") {
+        } else if ("*".equals(rator.getData())) {
             int val1 = Integer.parseInt(rand1.getData());
             int val2 = Integer.parseInt(rand2.getData());
             return new Int(Integer.toString(val1*val2));
-        } else if (rator.getData() == "/") {
+        } else if ("/".equals(rator.getData())) {
             int val1 = Integer.parseInt(rand1.getData());
             int val2 = Integer.parseInt(rand2.getData());
             return new Int(Integer.toString(val1/val2));
-        } else if (rator.getData() == "**") {
+        } else if ("**".equals(rator.getData())) {
             int val1 = Integer.parseInt(rand1.getData());
             int val2 = Integer.parseInt(rand2.getData());
-            return new Int(Double.toString(Math.pow(val1, val2)));
-        } else if (rator.getData() == "&") {            
+            return new Int(Integer.toString((int) Math.pow(val1, val2)));
+        } else if ("&".equals(rator.getData())) {            
             boolean val1 = Boolean.parseBoolean(rand1.getData());
             boolean val2 = Boolean.parseBoolean(rand2.getData());
             return new Bool(Boolean.toString(val1 && val2));
-        } else if (rator.getData() == "or") {            
+        } else if ("or".equals(rator.getData())) {            
             boolean val1 = Boolean.parseBoolean(rand1.getData());
             boolean val2 = Boolean.parseBoolean(rand2.getData());
             return new Bool(Boolean.toString(val1 || val2));
-        } else if (rator.getData() == "eq") {            
+        } else if ("eq".equals(rator.getData())) {            
             String val1 = rand1.getData();
             String val2 = rand2.getData();
-            return new Bool(Boolean.toString(val1 == val2));
-        } else if (rator.getData() == "ne") {            
+            return new Bool(Boolean.toString(val1.equals(val2)));
+        } else if ("ne".equals(rator.getData())) {            
             String val1 = rand1.getData();
             String val2 = rand2.getData();
-            return new Bool(Boolean.toString(val1 != val2));
-        } else if (rator.getData() == "ls") {            
+            return new Bool(Boolean.toString(!val1.equals(val2)));
+        } else if ("ls".equals(rator.getData())) {            
             int val1 = Integer.parseInt(rand1.getData());
             int val2 = Integer.parseInt(rand2.getData());
             return new Bool(Boolean.toString(val1 < val2));
-        } else if (rator.getData() == "le") {            
+        } else if ("le".equals(rator.getData())) {            
             int val1 = Integer.parseInt(rand1.getData());
             int val2 = Integer.parseInt(rand2.getData());
             return new Bool(Boolean.toString(val1 <= val2));
-        } else if (rator.getData() == "gr") {            
+        } else if ("gr".equals(rator.getData())) {            
             int val1 = Integer.parseInt(rand1.getData());
             int val2 = Integer.parseInt(rand2.getData());
             return new Bool(Boolean.toString(val1 > val2));
-        } else if (rator.getData() == "ge") {            
+        } else if ("ge".equals(rator.getData())) {            
             int val1 = Integer.parseInt(rand1.getData());
             int val2 = Integer.parseInt(rand2.getData());
             return new Bool(Boolean.toString(val1 >= val2));
-        } else if (rator.getData() == "aug") {            
+        } else if ("aug".equals(rator.getData())) {            
             Tup val1 = (Tup) rand1;
             Tup val2 = (Tup) rand2;
             Tup tup = new Tup();
