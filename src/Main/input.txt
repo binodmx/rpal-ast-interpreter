@@ -3,7 +3,7 @@ let
 ..<ID:f>
 ..<ID:x>
 ..<ID:y>
-..**
+..+
 ...<ID:x>
 ...<ID:y>
 .gamma

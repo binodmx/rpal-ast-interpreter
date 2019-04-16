@@ -14,4 +14,7 @@ public class Rand extends Symbol {
         super(data);
     }
     
+    public String getData() {
+        return super.getData();
+    }
 }
