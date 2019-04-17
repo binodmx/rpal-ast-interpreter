@@ -30,6 +30,8 @@ public class CSEMachine {
         E currentEnvironment = this.environment.get(0);
         int j = 1;
         while (!control.isEmpty()) {
+            //this.printControl();
+            //this.printStack();
             // pop last element of the control
             Symbol currentSymbol = control.get(control.size()-1);
             control.remove(control.size()-1);            
@@ -127,7 +129,6 @@ public class CSEMachine {
                     } else if ("Isinteger".equals(nextSymbol.getData())) {
                         // implement
                     } else if ("Isstring".equals(nextSymbol.getData())) {
-                        System.out.println(this.stack.get(0).getData());
                         this.stack.remove(0);
                         this.stack.add(0, new Bool("true"));
                     } else if ("Istuple".equals(nextSymbol.getData())) {
