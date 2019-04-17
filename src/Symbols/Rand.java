@@ -14,6 +14,7 @@ public class Rand extends Symbol {
         super(data);
     }
     
+    @Override
     public String getData() {
         return super.getData();
     }

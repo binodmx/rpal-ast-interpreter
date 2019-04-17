@@ -14,6 +14,7 @@ public class Id extends Rand {
         super(data);
     }
     
+    @Override
     public String getData() {
         return super.getData();
     }

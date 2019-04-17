@@ -80,7 +80,7 @@ public class CSEMachineFactory {
                 lambda.identifiers.add(new Id(identifier.getData().substring(4, node.getData().length()-1)));
             }
         } else {
-            lambda.identifiers.add(new Id(node.children.get(0).getData().substring(4, node.getData().length()-1)));
+            lambda.identifiers.add(new Id(node.children.get(0).getData().substring(4, node.children.get(0).getData().length()-1)));
         }
         return lambda;
     }

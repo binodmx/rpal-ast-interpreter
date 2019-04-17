@@ -30,8 +30,6 @@ public class CSEMachine {
         E currentEnvironment = this.environment.get(0);
         int j = 1;
         while (!control.isEmpty()) {
-            this.printControl();
-            this.printStack();
             // pop last element of the control
             Symbol currentSymbol = control.get(control.size()-1);
             control.remove(control.size()-1);            
@@ -116,16 +114,30 @@ public class CSEMachine {
                         this.stack.remove(0);
                         this.stack.remove(0);
                         s1.setData(s1.getData() + s2.getData());
-                        this.stack.add(0, s1);
-                    } else if ("Isstring".equals(nextSymbol.getData())) {
-                        this.stack.remove(0);
-                        Bool b = new Bool("true");
-                        this.stack.add(0, b);
+                        this.stack.add(0, s1);                                          
                     } else if ("Order".equals(nextSymbol.getData())) {
                         Tup tup = (Tup) this.stack.get(0);
                         this.stack.remove(0);
                         Int n = new Int(Integer.toString(tup.symbols.size()));
                         this.stack.add(0, n);
+                    } else if ("Null".equals(nextSymbol.getData())) {
+                        // implement
+                    } else if ("Itos".equals(nextSymbol.getData())) {
+                        // implement
+                    } else if ("Isinteger".equals(nextSymbol.getData())) {
+                        // implement
+                    } else if ("Isstring".equals(nextSymbol.getData())) {
+                        System.out.println(this.stack.get(0).getData());
+                        this.stack.remove(0);
+                        this.stack.add(0, new Bool("true"));
+                    } else if ("Istuple".equals(nextSymbol.getData())) {
+                        // implement
+                    } else if ("Isdummy".equals(nextSymbol.getData())) {
+                        // implement
+                    } else if ("Istruthvalue".equals(nextSymbol.getData())) {
+                        // implement
+                    } else if ("Isfunction".equals(nextSymbol.getData())) {
+                        // implement
                     }
                 }
             // rule no. 5
