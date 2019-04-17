@@ -30,8 +30,6 @@ public class CSEMachine {
         E currentEnvironment = this.environment.get(0);
         int j = 1;
         while (!control.isEmpty()) {
-            //this.printControl();
-            //this.printStack();
             // pop last element of the control
             Symbol currentSymbol = control.get(control.size()-1);
             control.remove(control.size()-1);            
