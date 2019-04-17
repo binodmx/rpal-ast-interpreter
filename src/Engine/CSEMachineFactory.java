@@ -45,7 +45,7 @@ public class CSEMachineFactory {
                 return new Ystar();
             // operands <ID:>, <INT:>, <STR:>, <nil>, <true>, <false>, <dummy>
             default:
-                if (node.getData().startsWith("<ID:")) {                    
+                if (node.getData().startsWith("<ID:")) { 
                     return new Id(node.getData().substring(4, node.getData().length()-1));
                 } else if (node.getData().startsWith("<INT:")) {                    
                     return new Int(node.getData().substring(5, node.getData().length()-1));

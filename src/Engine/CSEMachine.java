@@ -30,6 +30,8 @@ public class CSEMachine {
         E currentEnvironment = this.environment.get(0);
         int j = 1;
         while (!control.isEmpty()) {
+            this.printControl();
+            this.printStack();
             // pop last element of the control
             Symbol currentSymbol = control.get(control.size()-1);
             control.remove(control.size()-1);            
@@ -72,11 +74,10 @@ public class CSEMachine {
                     this.environment.add(e);
                 // tup (rule no. 10)
                 } else if (nextSymbol instanceof Tup) {
-                    Tup tup = (Tup) this.stack.get(0);
-                    this.stack.remove(0);
+                    Tup tup = (Tup) nextSymbol;
                     int i = Integer.parseInt(this.stack.get(0).getData());
                     this.stack.remove(0);
-                    this.stack.add(0, tup.symbols.get(i));
+                    this.stack.add(0, tup.symbols.get(i-1));
                 // ystar (rule no. 12)
                 } else if (nextSymbol instanceof Ystar) {
                     Lambda lambda = (Lambda) this.stack.get(0);
@@ -120,6 +121,11 @@ public class CSEMachine {
                         this.stack.remove(0);
                         Bool b = new Bool("true");
                         this.stack.add(0, b);
+                    } else if ("Order".equals(nextSymbol.getData())) {
+                        Tup tup = (Tup) this.stack.get(0);
+                        this.stack.remove(0);
+                        Int n = new Int(Integer.toString(tup.symbols.size()));
+                        this.stack.add(0, n);
                     }
                 }
             // rule no. 5
@@ -169,8 +175,7 @@ public class CSEMachine {
                 }
                 this.stack.add(0, tup);
             } else if (currentSymbol instanceof Delta) {
-                Delta delta = (Delta) currentSymbol;
-                this.control.addAll(delta.symbols);
+                this.control.addAll(((Delta) currentSymbol).symbols);
             } else if (currentSymbol instanceof B) {
                 this.control.addAll(((B) currentSymbol).symbols);
             } else {
@@ -291,13 +296,13 @@ public class CSEMachine {
             int val1 = Integer.parseInt(rand1.getData());
             int val2 = Integer.parseInt(rand2.getData());
             return new Bool(Boolean.toString(val1 >= val2));
-        } else if ("aug".equals(rator.getData())) {            
-            Tup val1 = (Tup) rand1;
-            Tup val2 = (Tup) rand2;
-            Tup tup = new Tup();
-            tup.symbols.addAll(val1.symbols);
-            tup.symbols.addAll(val2.symbols);                    
-            return tup;
+        } else if ("aug".equals(rator.getData())) {  
+            if (rand2 instanceof Tup) {
+                ((Tup) rand1).symbols.addAll(((Tup) rand2).symbols);
+            } else {
+                ((Tup) rand1).symbols.add(rand2);
+            }
+            return rand1;
         } else {
             return new Err();
         }
