@@ -14,8 +14,16 @@ public class Eta extends Symbol {
         this.index = i;
     }
     
+    public int getIndex() {
+        return this.index;
+    }
+    
     public void setEnvironment(int e) {
         this.environment = e;
+    }
+    
+    public int getEnvironment() {    
+        return this.environment;
     }
     
     public void setIdentifier(Id id) {

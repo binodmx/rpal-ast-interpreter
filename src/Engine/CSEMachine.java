@@ -6,9 +6,9 @@ import java.util.ArrayList;
 public class CSEMachine {
     private ArrayList<Symbol> control;
     private ArrayList<Symbol> stack;
-    private ArrayList<Symbol> environment;
+    private ArrayList<E> environment;
 
-    public CSEMachine(ArrayList<Symbol> control, ArrayList<Symbol> stack, ArrayList<Symbol> environment) {
+    public CSEMachine(ArrayList<Symbol> control, ArrayList<Symbol> stack, ArrayList<E> environment) {
         this.setControl(control);
         this.setStack(stack);
         this.setEnvironment(environment);
@@ -22,22 +22,19 @@ public class CSEMachine {
         this.stack = stack;
     }
     
-    public void setEnvironment(ArrayList<Symbol> environment) {
+    public void setEnvironment(ArrayList<E> environment) {
         this.environment = environment;
     }
     
     public void execute() {
-        E currentEnvironment = (E) this.environment.get(0);
+        E currentEnvironment = this.environment.get(0);
+        int j = 1;
         while (!control.isEmpty()) {
-            //this.printControl();
-            //this.printStack();
             // pop last element of the control
             Symbol currentSymbol = control.get(control.size()-1);
-            control.remove(control.size()-1);
-            
+            control.remove(control.size()-1);            
             // rule no. 1
             if (currentSymbol instanceof Id) {
-                //System.out.println("CE: "+currentEnvironment.getIndex()+", "+currentEnvironment.getParent().getIndex());
                 this.stack.add(0, currentEnvironment.lookup((Id) currentSymbol));
             // rule no. 2
             } else if (currentSymbol instanceof Lambda) {
@@ -51,15 +48,10 @@ public class CSEMachine {
                 // lambda (rule no. 4 & 11)
                 if (nextSymbol instanceof Lambda) {
                     Lambda lambda = (Lambda) nextSymbol;
-                    E e = new E(lambda.getIndex());
+                    E e = new E(j++);
                     if (lambda.identifiers.size() == 1) {
-                        Id id = lambda.identifiers.get(0);
-                        if (id.getData() == "Print") {
-                            
-                        } else {
-                            e.values.put(lambda.identifiers.get(0), this.stack.get(0));
-                            this.stack.remove(0);
-                        }
+                        e.values.put(lambda.identifiers.get(0), this.stack.get(0));
+                        this.stack.remove(0);
                     } else {
                         Tup tup = (Tup) this.stack.get(0);
                         this.stack.remove(0);
@@ -68,24 +60,26 @@ public class CSEMachine {
                             e.values.put(id, tup.symbols.get(i++));
                         }
                     }
-                    e.setParent(currentEnvironment);
+                    for (E environment: this.environment) {
+                        if (environment.getIndex() == lambda.getEnvironment()) {
+                            e.setParent(environment);
+                        }
+                    }        
                     currentEnvironment = e;
                     this.control.add(e);
                     this.control.add(lambda.getDelta());
                     this.stack.add(0, e);
                     this.environment.add(e);
-                }
                 // tup (rule no. 10)
-                if (nextSymbol instanceof Tup) {
+                } else if (nextSymbol instanceof Tup) {
                     Tup tup = (Tup) this.stack.get(0);
                     this.stack.remove(0);
                     int i = Integer.parseInt(this.stack.get(0).getData());
                     this.stack.remove(0);
                     this.stack.add(0, tup.symbols.get(i));
-                }
                 // ystar (rule no. 12)
-                if (nextSymbol instanceof Ystar) {
-                    Lambda lambda = (Lambda) nextSymbol;
+                } else if (nextSymbol instanceof Ystar) {
+                    Lambda lambda = (Lambda) this.stack.get(0);
                     this.stack.remove(0);
                     Eta eta = new Eta();
                     eta.setIndex(lambda.getIndex());
@@ -93,17 +87,54 @@ public class CSEMachine {
                     eta.setIdentifier(lambda.identifiers.get(0));
                     eta.setLambda(lambda);
                     this.stack.add(0, eta);
-                }
                 // eta (rule no. 13)
-                if (nextSymbol instanceof Eta) {
+                } else if (nextSymbol instanceof Eta) {
                     Eta eta = (Eta) nextSymbol;
+                    Lambda lambda = eta.getLambda();
                     this.control.add(new Gamma());
                     this.control.add(new Gamma());
-                    this.stack.add(0, eta.getLambda());
+                    this.stack.add(0, eta);
+                    this.stack.add(0, lambda);
+                // builtin functions
+                } else {
+                    if ("Print".equals(nextSymbol.getData())) {
+                        // do nothing
+                    } else if ("Stem".equals(nextSymbol.getData())) {
+                        Symbol s = this.stack.get(0);
+                        this.stack.remove(0);
+                        s.setData(s.getData().substring(0, 1));
+                        this.stack.add(0, s);
+                    } else if ("Stern".equals(nextSymbol.getData())) {
+                        Symbol s = this.stack.get(0);
+                        this.stack.remove(0);
+                        s.setData(s.getData().substring(1));
+                        this.stack.add(0, s);
+                    } else if ("Conc".equals(nextSymbol.getData())) {
+                        Symbol s1 = this.stack.get(0);
+                        Symbol s2 = this.stack.get(1);
+                        this.stack.remove(0);
+                        this.stack.remove(0);
+                        s1.setData(s1.getData() + s2.getData());
+                        this.stack.add(0, s1);
+                    } else if ("Isstring".equals(nextSymbol.getData())) {
+                        this.stack.remove(0);
+                        Bool b = new Bool("true");
+                        this.stack.add(0, b);
+                    }
                 }
             // rule no. 5
-            } else if (currentSymbol instanceof E) {
+            } else if (currentSymbol instanceof E) {                 
                 this.stack.remove(1);
+                this.environment.get(((E) currentSymbol).getIndex()).setIsRemoved(true);
+                int y = this.environment.size();
+                while (y > 0) {
+                    if (!this.environment.get(y-1).getIsRemoved()) {
+                        currentEnvironment = this.environment.get(y-1);
+                        break;
+                    } else {
+                        y--;
+                    }
+                }
             // rule no. 6 & 7
             } else if (currentSymbol instanceof Rator) {
                 if (currentSymbol instanceof Uop) {
@@ -140,10 +171,12 @@ public class CSEMachine {
             } else if (currentSymbol instanceof Delta) {
                 Delta delta = (Delta) currentSymbol;
                 this.control.addAll(delta.symbols);
+            } else if (currentSymbol instanceof B) {
+                this.control.addAll(((B) currentSymbol).symbols);
             } else {
                 this.stack.add(0, currentSymbol);
             }
-        }        
+        }   
     }
     
     public void printControl() {
@@ -156,6 +189,8 @@ public class CSEMachine {
                 System.out.print(((Delta) symbol).getIndex());
             } else if (symbol instanceof E) {
                 System.out.print(((E) symbol).getIndex());
+            } else if (symbol instanceof Eta) {
+                System.out.print(((Eta) symbol).getIndex());
             }
             System.out.print(",");
         }
@@ -172,10 +207,23 @@ public class CSEMachine {
                 System.out.print(((Delta) symbol).getIndex());
             } else if (symbol instanceof E) {
                 System.out.print(((E) symbol).getIndex());
+            } else if (symbol instanceof Eta) {
+                System.out.print(((Eta) symbol).getIndex());
             }
             System.out.print(",");
         }
         System.out.println();
+    }
+    
+    public void printEnvironment() {
+        for (Symbol symbol: this.environment) {
+            System.out.print("e"+((E) symbol).getIndex()+ " --> ");
+            if (((E) symbol).getIndex()!=0) {
+                System.out.println("e"+((E) symbol).getParent().getIndex());
+            } else {
+                System.out.println();
+            }
+        }
     }
     
     public Symbol applyUnaryOperation(Symbol rator, Symbol rand) {
@@ -255,8 +303,24 @@ public class CSEMachine {
         }
     }
     
+    public String getTupleValue(Tup tup) {
+        String temp = "(";
+        for (Symbol symbol: tup.symbols) {
+            if (symbol instanceof Tup) {
+                temp = temp + this.getTupleValue((Tup) symbol) + ", ";
+            } else {
+                temp = temp + symbol.getData() + ", ";
+            }            
+        }
+        temp = temp.substring(0, temp.length()-2) + ")";
+        return temp;
+    }
+    
     public String getAnswer() {
         this.execute();
+        if (stack.get(0) instanceof Tup) {
+            return this.getTupleValue((Tup) stack.get(0));
+        }
         return stack.get(0).getData();
     }
 }

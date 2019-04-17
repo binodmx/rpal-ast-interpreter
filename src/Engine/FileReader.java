@@ -23,8 +23,8 @@ public class FileReader {
     
     private void readFile() {
         this.data = new ArrayList<String>();
-        while(this.scanner.hasNext()) {
-             this.data.add(this.scanner.next());
+        while(this.scanner.hasNextLine()) {
+             this.data.add(this.scanner.nextLine());
         }
     }
     
