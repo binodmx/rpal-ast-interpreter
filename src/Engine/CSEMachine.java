@@ -125,18 +125,47 @@ public class CSEMachine {
                     } else if ("Itos".equals(nextSymbol.getData())) {
                         // implement
                     } else if ("Isinteger".equals(nextSymbol.getData())) {
-                        // implement
+                        if (this.stack.get(0) instanceof Int) {
+                            this.stack.add(0, new Bool("true"));
+                        } else {
+                            this.stack.add(0, new Bool("false"));
+                        }
+                        this.stack.remove(1);
                     } else if ("Isstring".equals(nextSymbol.getData())) {
-                        this.stack.remove(0);
-                        this.stack.add(0, new Bool("true"));
+                        if (this.stack.get(0) instanceof Str) {
+                            this.stack.add(0, new Bool("true"));
+                        } else {
+                            this.stack.add(0, new Bool("false"));
+                        }
+                        this.stack.remove(1);                        
                     } else if ("Istuple".equals(nextSymbol.getData())) {
-                        // implement
+                        if (this.stack.get(0) instanceof Tup) {
+                            this.stack.add(0, new Bool("true"));
+                        } else {
+                            this.stack.add(0, new Bool("false"));
+                        }
+                        this.stack.remove(1);
                     } else if ("Isdummy".equals(nextSymbol.getData())) {
-                        // implement
+                        if (this.stack.get(0) instanceof Dummy) {
+                            this.stack.add(0, new Bool("true"));
+                        } else {
+                            this.stack.add(0, new Bool("false"));
+                        }
+                        this.stack.remove(1);
                     } else if ("Istruthvalue".equals(nextSymbol.getData())) {
-                        // implement
+                        if (this.stack.get(0) instanceof Bool) {
+                            this.stack.add(0, new Bool("true"));
+                        } else {
+                            this.stack.add(0, new Bool("false"));
+                        }
+                        this.stack.remove(1);
                     } else if ("Isfunction".equals(nextSymbol.getData())) {
-                        // implement
+                        if (this.stack.get(0) instanceof Lambda) {
+                            this.stack.add(0, new Bool("true"));
+                        } else {
+                            this.stack.add(0, new Bool("false"));
+                        }
+                        this.stack.remove(1);
                     }
                 }
             // rule no. 5

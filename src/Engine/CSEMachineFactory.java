@@ -50,7 +50,7 @@ public class CSEMachineFactory {
                 } else if (node.getData().startsWith("<INT:")) {                    
                     return new Int(node.getData().substring(5, node.getData().length()-1));
                 } else if (node.getData().startsWith("<STR:")) {                    
-                    return new Int(node.getData().substring(6, node.getData().length()-2));
+                    return new Str(node.getData().substring(6, node.getData().length()-2));
                 } else if (node.getData().startsWith("<nil")) {                    
                     return new Tup();
                 } else if (node.getData().startsWith("<true>")) {                    
